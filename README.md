@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # test
 
 asdf
@@ -75,3 +76,7 @@ asdf
     }
 
 </script>
+=======
+# math-club
+A website for the competitive math club
+>>>>>>> 5415f03850c8add216f97485b90b532499b38f48
