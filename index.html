@@ -1,0 +1,131 @@
+<style>
+    body {
+        background-image: linear-gradient(120deg, #155799, #159957);
+        font-family: Roboto, Arial, sans-serif;
+    }
+
+    ::selection {
+        background-color: rgba(2, 42, 95, 0.418);
+    }
+
+    @font-face {
+        font-family: Roboto;
+        src: url('Roboto.ttf');
+    }
+
+    #hero {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-image: linear-gradient(120deg, #ca7a02, #7f1599);;
+        color: #ededed;
+    }
+
+    .lecture {
+        display: block;
+        padding: 20px 20px 50px 20px;
+        background-color: #ededed;
+        border-radius: 5px;
+        width: 50%;
+        margin: auto;
+        margin-top: 110px;
+        text-align: center;
+        box-shadow: #0000004b 0 0 100px 18px;
+        margin-bottom: 40px;
+    }
+
+    .lecture a, .lecture canvas {
+        user-select: none;
+        color: #161616;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-top: 30px;
+    }
+
+    #hero h1, #hero h2{
+        display: inline-block;
+        padding: 0px 20px;
+    }
+
+</style>
+
+<!--
+    Import PDF.js required libraries 
+-->
+<script src="pdf.js"></script>
+<script src="pdf.worker.js"></script>
+
+<div id="hero">
+    <h1>ESSCMC |</h1>
+    <h2>Erindale Competitive Math Club Slides</h2>
+</div>
+
+<div class="lecture">
+    <a>Lecture 2: Number Theory Part 1</a>
+    <canvas data-source="https://github.com/chfrn/Erindale-Math-Club/blob/master/Number%20Theory/Divisibility%20and%20GCD%20Part%201.pdf" data-scale="0.5"></canvas>
+</div>
+
+<div class="lecture">
+    <a>Lecture 1: Invariance Principle</a>
+    <canvas data-source="https://github.com/chfrn/Erindale-Math-Club/blob/master/Invariance%20Principle/Invariance%20Principle%20Powerpoint.pdf" data-scale="0.5"></canvas>
+</div>
+
+<script type="text/javascript">
+
+    const renderPDF = async (canvas) => {
+
+        let { source, scale } = canvas.dataset;
+
+        canvas.parentElement.firstElementChild.href = source;
+
+        source = source.replace('//github', '//raw.githubusercontent').replace('/blob', '')
+
+        const ctx = canvas.getContext('2d');
+        const rect = canvas.getBoundingClientRect();   
+
+        const pdf = await pdfjsLib.getDocument(source);
+
+        const { numPages } = pdf._pdfInfo;
+
+        let currentPage = 0, page, viewport;
+
+        canvas.onclick = (e) => {
+            console.log(e.clientX - rect.left)
+            updatePage(e.clientX - rect.left > rect.left - canvas.width / 2);
+        }
+
+        document.onkeydown = (e) => {
+            if(e.keyCode === 39 || e.keyCode === 37) updatePage(e.keyCode === 39)
+        }
+
+        const updatePage = async (right) => {
+            if(right) currentPage = Math.min(currentPage + 1, numPages);
+            else currentPage = Math.max(1, currentPage - 1)
+
+            page = await pdf.getPage(currentPage);
+
+            let view = page.getViewport(1 / scale);
+
+            canvas.width = view.width;
+            canvas.height = view.height;
+
+            const renderContext = { 
+                canvasContext: ctx,
+                viewport: view
+            }
+
+            await page.render(renderContext);
+            ctx.fillStyle = "#181818";
+            ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
+            ctx.fillStyle = "#ededed";
+            ctx.font = '15px Roboto'; 
+            ctx.fillText(`Slide ${currentPage}/${numPages}`, 10, canvas.height - 10);
+        }
+
+        updatePage(1);
+    }   
+
+    for(const c of document.getElementsByTagName('canvas')) renderPDF(c);
+
+</script>
