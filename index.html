@@ -108,7 +108,7 @@
             let view = page.getViewport(1 / scale);
 
             canvas.width = view.width;
-            canvas.height = view.height;
+            canvas.height = view.height + 30;
 
             const renderContext = { 
                 canvasContext: ctx,
@@ -127,5 +127,4 @@
     }   
 
     for(const c of document.getElementsByTagName('canvas')) renderPDF(c);
-
 </script>
