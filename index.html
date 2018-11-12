@@ -18,7 +18,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        background-image: linear-gradient(90deg, #155799, #158269);
+        background-image: linear-gradient(90deg, #155799, #15757c);
         color: #ededed;
     }
 
@@ -66,6 +66,16 @@
     -->
 
 <div class="lecture">
+    <a>Lecture 4: Combanitorics Part 2</a>
+    <canvas data-source="https://github.com/chfrn/Erindale-Math-Club/blob/master/Combinatorics/Combinatorics.pdf" data-scale="0.5"></canvas>
+</div>
+
+<div class="lecture">
+    <a>Lecture 3: Combanitorics Prerequisite - The Pigeonhole Principle</a>
+    <canvas data-source="https://github.com/chfrn/Erindale-Math-Club/blob/master/Combinatorics/Combinatorics%20Prerequisite.pdf" data-scale="0.5"></canvas>
+</div>
+
+<div class="lecture">
     <a>Lecture 2: Number Theory Part 1</a>
     <canvas data-source="https://github.com/chfrn/Erindale-Math-Club/blob/master/Number%20Theory/Divisibility%20and%20GCD%20Part%201.pdf" data-scale="0.5"></canvas>
 </div>
@@ -89,8 +99,7 @@
 
         source = source.replace('//github', '//raw.githubusercontent').replace('/blob', '')
 
-        const ctx = canvas.getContext('2d');
-        const rect = canvas.getBoundingClientRect();   
+        const ctx = canvas.getContext('2d'); 
 
         const pdf = await pdfjsLib.getDocument(source);
 
@@ -99,8 +108,7 @@
         let currentPage = 0, page, viewport;
 
         canvas.onclick = (e) => {
-            console.log(e.clientX - rect.left)
-            updatePage(e.clientX - rect.left > rect.left - canvas.width / 2);
+            updatePage(e.clientX > document.body.offsetWidth / 2);
         }
 
         document.onkeydown = (e) => {
